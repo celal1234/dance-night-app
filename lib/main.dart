@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:universal_html/html.dart' as html;
 import 'theme/app_theme.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/login_screen.dart';
@@ -83,10 +84,17 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
 
     if (!mounted) return;
+
+    // URL hash'ini oku (örn: "#/lntadmin" → "/lntadmin")
+    final hash = html.window.location.hash;
+    final initialRoute = (hash.startsWith('#/') && hash.length > 2)
+        ? hash.substring(1)
+        : '/';
+
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => const MyApp(),
+        pageBuilder: (_, __, ___) => MyApp(initialRoute: initialRoute),
         transitionsBuilder: (_, anim, __, child) => FadeTransition(opacity: anim, child: child),
         transitionDuration: const Duration(milliseconds: 500),
       ),
@@ -177,7 +185,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String initialRoute;
+  const MyApp({super.key, this.initialRoute = '/'});
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +194,7 @@ class MyApp extends StatelessWidget {
       title: 'Latin Nation Turkey',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
-      initialRoute: '/',
+      initialRoute: initialRoute,
       routes: {
         '/': (context) => const WelcomeScreen(),
         '/lntadmin': (context) => const LoginScreen(),
