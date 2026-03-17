@@ -8,18 +8,23 @@ import 'screens/login_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const SplashApp());
+  runApp(const MyApp());
 }
 
-class SplashApp extends StatelessWidget {
-  const SplashApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Latin Nation Turkey',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
       home: const SplashScreen(),
+      routes: {
+        '/': (context) => const WelcomeScreen(),
+        '/lntadmin': (context) => const LoginScreen(),
+      },
     );
   }
 }
@@ -54,30 +59,13 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     final supabaseUrl = dotenv.env['SUPABASE_URL'];
     final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'];
 
-    // Minimum splash görünme süresi
     await Future.delayed(const Duration(milliseconds: 1500));
 
     if (!mounted) return;
 
     if (supabaseUrl == null || supabaseUrl.isEmpty || supabaseUrl.contains('YOUR_SUPABASE_URL_HERE') ||
         supabaseAnonKey == null || supabaseAnonKey.isEmpty || supabaseAnonKey.contains('YOUR_SUPABASE_ANON_KEY_HERE')) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => Scaffold(
-            body: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: Text(
-                  'Lütfen .env dosyasındaki SUPABASE_URL ve SUPABASE_ANON_KEY değerlerini doldurun.',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 20, color: Colors.redAccent),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
+      Navigator.pushReplacementNamed(context, '/');
       return;
     }
 
@@ -85,20 +73,13 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     if (!mounted) return;
 
-    // URL hash'ini oku (örn: "#/lntadmin" → "/lntadmin")
-    final hash = html.window.location.hash;
-    final initialRoute = (hash.startsWith('#/') && hash.length > 2)
-        ? hash.substring(1)
+    // URL hash'ini oku → doğru route'a yönlendir
+    final hash = html.window.location.hash; // örn: "#/lntadmin"
+    final targetRoute = (hash.startsWith('#/') && hash.length > 2)
+        ? hash.substring(1)  // "#/lntadmin" → "/lntadmin"
         : '/';
 
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (_, __, ___) => MyApp(initialRoute: initialRoute),
-        transitionsBuilder: (_, anim, __, child) => FadeTransition(opacity: anim, child: child),
-        transitionDuration: const Duration(milliseconds: 500),
-      ),
-    );
+    Navigator.pushReplacementNamed(context, targetRoute);
   }
 
   @override
@@ -180,25 +161,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           ),
         ),
       ),
-    );
-  }
-}
-
-class MyApp extends StatelessWidget {
-  final String initialRoute;
-  const MyApp({super.key, this.initialRoute = '/'});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Latin Nation Turkey',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
-      initialRoute: initialRoute,
-      routes: {
-        '/': (context) => const WelcomeScreen(),
-        '/lntadmin': (context) => const LoginScreen(),
-      },
     );
   }
 }
