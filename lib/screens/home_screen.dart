@@ -18,11 +18,6 @@ class _HomeScreenState extends State<HomeScreen> {
   String _searchQuery = '';
   String _sortBy = 'Tarih (Yeniden Eskiye)';
 
-  void _logout() {
-    html.window.sessionStorage.remove('lnt_admin_logged_in');
-    Navigator.pushNamedAndRemoveUntil(context, '/lntadmin', (_) => false);
-  }
-
   Future<void> _showAddDialog() async {
     final result = await showDialog<Map<String, dynamic>>(
       context: context,
@@ -258,15 +253,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         if (!isDesktop) ...[
                           IconButton(
                             onPressed: _showAddDialog,
-                            icon: const Icon(Icons.add_circle, size: 44),
+                            icon: const Icon(Icons.add_circle, size: 48),
                             color: Theme.of(context).colorScheme.primary,
-                          ),
-                          IconButton(
-                            onPressed: _logout,
-                            icon: const Icon(Icons.logout, size: 28),
-                            color: Colors.white54,
-                            tooltip: 'Çıkış Yap',
-                          ),
+                          )
                         ] else ...[
                           ElevatedButton.icon(
                             onPressed: _showAddDialog,
@@ -275,18 +264,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          OutlinedButton.icon(
-                            onPressed: _logout,
-                            icon: const Icon(Icons.logout, size: 18),
-                            label: const Text('Çıkış'),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white54,
-                              side: BorderSide(color: Colors.white.withOpacity(0.15)),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                             ),
                           ),
                         ]
