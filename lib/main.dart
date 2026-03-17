@@ -55,29 +55,32 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   Future<void> _initApp() async {
-    await dotenv.load(fileName: ".env");
+    try {
+      await dotenv.load(fileName: ".env");
 
-    final supabaseUrl = dotenv.env['SUPABASE_URL'];
-    final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'];
+      final supabaseUrl = dotenv.env['SUPABASE_URL'];
+      final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'];
 
-    await Future.delayed(const Duration(milliseconds: 1500));
+      await Future.delayed(const Duration(milliseconds: 1500));
 
-    if (!mounted) return;
-
-    if (supabaseUrl == null || supabaseUrl.isEmpty || supabaseUrl.contains('YOUR_SUPABASE_URL_HERE') ||
-        supabaseAnonKey == null || supabaseAnonKey.isEmpty || supabaseAnonKey.contains('YOUR_SUPABASE_ANON_KEY_HERE')) {
-      Navigator.pushReplacementNamed(context, '/');
-      return;
+      if (supabaseUrl != null && supabaseUrl.isNotEmpty && !supabaseUrl.contains('YOUR_SUPABASE_URL_HERE') &&
+          supabaseAnonKey != null && supabaseAnonKey.isNotEmpty && !supabaseAnonKey.contains('YOUR_SUPABASE_ANON_KEY_HERE')) {
+        try {
+          await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+        } catch (_) {
+          // Zaten initialize edilmişse devam et
+        }
+      }
+    } catch (_) {
+      // Herhangi bir hata olsa bile splash'tan çık
     }
-
-    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
 
     if (!mounted) return;
 
     // URL hash'ini oku → doğru route'a yönlendir
-    final hash = html.window.location.hash; // örn: "#/lntadmin"
+    final hash = html.window.location.hash;
     final targetRoute = (hash.startsWith('#/') && hash.length > 2)
-        ? hash.substring(1)  // "#/lntadmin" → "/lntadmin"
+        ? hash.substring(1)
         : '/';
 
     Navigator.pushReplacementNamed(context, targetRoute);
