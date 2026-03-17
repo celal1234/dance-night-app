@@ -59,15 +59,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () {
-                    _firstNameController.clear();
-                    _lastNameController.clear();
-                    // State refresh will clear the phone automatically if handled
-                    setState(() {
-                      _fullPhoneNumber = '';
-                    });
                     Navigator.pop(context); // Close dialog
+                    Navigator.pop(context); // Back to welcome screen
                   },
-                  child: const Text('Yeni Kayıt'),
+                  child: const Text('Tamam'),
                 )
               ],
             ),

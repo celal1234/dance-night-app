@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:universal_html/html.dart' as html;
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,6 +16,23 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
 
   @override
+  void initState() {
+    super.initState();
+    // If already logged in (e.g. after page refresh), go directly to HomeScreen
+    final loggedIn = html.window.sessionStorage['lnt_admin_logged_in'];
+    if (loggedIn == 'true') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const HomeScreen()),
+          );
+        }
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
@@ -27,7 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
       final password = _passwordController.text.trim();
 
       if (username == 'lntadmin' && password == 'lntadmin123456') {
-        // Success
+        // Success - save session for refresh support
+        html.window.sessionStorage['lnt_admin_logged_in'] = 'true';
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const HomeScreen()),
