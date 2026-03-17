@@ -417,6 +417,21 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  String _formatDate(dynamic raw) {
+    if (raw == null) return '';
+    try {
+      final dt = DateTime.parse(raw.toString()).toLocal();
+      final day = dt.day.toString().padLeft(2, '0');
+      final month = dt.month.toString().padLeft(2, '0');
+      final year = dt.year;
+      final hour = dt.hour.toString().padLeft(2, '0');
+      final min = dt.minute.toString().padLeft(2, '0');
+      return '$day.$month.$year $hour:$min';
+    } catch (_) {
+      return raw.toString();
+    }
+  }
+
   Widget _buildAttendeeCard(Map<String, dynamic> attendee) {
     return Card(
       elevation: 4,
@@ -479,6 +494,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       Icon(Icons.directions_run, size: 14, color: Colors.white.withOpacity(0.5)),
                       const SizedBox(width: 8),
                       Text(attendee['instructor_name'], style: TextStyle(color: Colors.white.withOpacity(0.7))),
+                    ],
+                  ),
+                if (attendee['created_at'] != null)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.access_time, size: 14, color: Colors.white.withOpacity(0.5)),
+                      const SizedBox(width: 8),
+                      Text(_formatDate(attendee['created_at']), style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 12)),
                     ],
                   ),
               ],
