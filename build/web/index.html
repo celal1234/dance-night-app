@@ -1,46 +1,102 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="/">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="Latin Nation Turkey">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="dance_night_app">
+  <meta name="apple-mobile-web-app-title" content="Latin Nation Turkey">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>dance_night_app</title>
+  <title>Latin Nation Turkey</title>
   <link rel="manifest" href="manifest.json">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      background-color: #121212;
+      height: 100%;
+      width: 100%;
+    }
+
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #1E1E1E 0%, #121212 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.4s ease;
+    }
+
+    #loading-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-title {
+      color: #ffffff;
+      font-family: sans-serif;
+      font-size: 32px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-top: 24px;
+    }
+
+    .loading-subtitle {
+      color: #6C63FF;
+      font-family: sans-serif;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 3px;
+      margin-top: 4px;
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid rgba(108, 99, 255, 0.2);
+      border-top-color: #6C63FF;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin-top: 40px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-  <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
 
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
-  -->
+  <div id="loading-screen">
+    <div class="loading-title">Latin Nation</div>
+    <div class="loading-subtitle">TURKEY</div>
+    <div class="spinner"></div>
+  </div>
+
   <script src="flutter_bootstrap.js" async></script>
+
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      var screen = document.getElementById('loading-screen');
+      if (screen) {
+        screen.classList.add('hidden');
+        setTimeout(function () { screen.remove(); }, 400);
+      }
+    });
+  </script>
+
 </body>
 </html>
