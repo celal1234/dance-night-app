@@ -377,10 +377,33 @@ class _HomeScreenState extends State<HomeScreen> {
                         return Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(right: 24.0, bottom: 8.0),
+                              padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 8.0),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.surface,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(color: Colors.white.withOpacity(0.1)),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.people, size: 18, color: Theme.of(context).colorScheme.primary),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'Toplam: ${attendees.length} kişi',
+                                          style: TextStyle(
+                                            color: Colors.white.withOpacity(0.85),
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                   ElevatedButton.icon(
                                     onPressed: () => _exportToExcel(attendees),
                                     icon: const Icon(Icons.download, size: 18),
