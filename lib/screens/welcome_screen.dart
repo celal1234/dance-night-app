@@ -79,7 +79,7 @@ class WelcomeScreen extends StatelessWidget {
                             Navigator.push(context, MaterialPageRoute(builder: (_) => const RegistrationScreen()));
                           },
                           icon: const Icon(Icons.person_add_alt_1, size: 28),
-                          label: const Text('Başvuru / Kayıt Formu', style: TextStyle(fontSize: 18)),
+                          label: const Text('Randevu Formu', style: TextStyle(fontSize: 18)),
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                           ),
