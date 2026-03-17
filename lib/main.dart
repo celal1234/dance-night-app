@@ -20,8 +20,9 @@ class MyApp extends StatelessWidget {
       title: 'Latin Nation Turkey',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
-      home: const SplashScreen(),
+      initialRoute: '/splash',
       routes: {
+        '/splash': (context) => const SplashScreen(),
         '/': (context) => const WelcomeScreen(),
         '/lntadmin': (context) => const LoginScreen(),
       },
