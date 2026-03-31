@@ -207,9 +207,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 prefixIcon: Icon(Icons.event),
                               ),
                               items: _events.map((event) {
+                                final date = event['event_date'] != null
+                                    ? () { try { final d = DateTime.parse(event['event_date'].toString()).toLocal(); return ' — ${d.day.toString().padLeft(2,'0')}.${d.month.toString().padLeft(2,'0')}.${d.year}'; } catch(_) { return ''; } }()
+                                    : '';
                                 return DropdownMenuItem<String>(
                                   value: event['id'].toString(),
-                                  child: Text(event['name'].toString()),
+                                  child: Text('${event['name']}$date'),
                                 );
                               }).toList(),
                               onChanged: (value) => setState(() => _selectedEventId = value),

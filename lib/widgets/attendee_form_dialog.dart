@@ -125,10 +125,15 @@ class _AttendeeFormDialogState extends State<AttendeeFormDialog> {
                     ),
                     items: [
                       const DropdownMenuItem<String>(value: null, child: Text('— Seçilmedi —')),
-                      ..._events.map((event) => DropdownMenuItem<String>(
-                        value: event['id'].toString(),
-                        child: Text(event['name'].toString()),
-                      )),
+                      ..._events.map((event) {
+                        final date = event['event_date'] != null
+                            ? () { try { final d = DateTime.parse(event['event_date'].toString()).toLocal(); return ' — ${d.day.toString().padLeft(2,'0')}.${d.month.toString().padLeft(2,'0')}.${d.year}'; } catch(_) { return ''; } }()
+                            : '';
+                        return DropdownMenuItem<String>(
+                          value: event['id'].toString(),
+                          child: Text('${event['name']}$date'),
+                        );
+                      }),
                     ],
                     onChanged: (value) => setState(() => _selectedEventId = value),
                   ),

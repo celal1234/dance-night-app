@@ -630,11 +630,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                             value: null,
                             child: Text('Tüm Etkinlikler', style: TextStyle(color: Colors.white70)),
                           ),
-                          ..._allEvents.map((e) => DropdownMenuItem<String?>(
-                                value: e['id'].toString(),
-                                child: Text(e['name'].toString(),
-                                    style: const TextStyle(color: Colors.white)),
-                              )),
+                          ..._allEvents.map((e) {
+                            final date = e['event_date'] != null
+                                ? () { try { final d = DateTime.parse(e['event_date'].toString()).toLocal(); return ' — ${d.day.toString().padLeft(2,'0')}.${d.month.toString().padLeft(2,'0')}.${d.year}'; } catch(_) { return ''; } }()
+                                : '';
+                            return DropdownMenuItem<String?>(
+                              value: e['id'].toString(),
+                              child: Text('${e['name']}$date', style: const TextStyle(color: Colors.white)),
+                            );
+                          }),
                         ],
                         onChanged: (value) => setState(() => _selectedEventFilter = value),
                       ),
