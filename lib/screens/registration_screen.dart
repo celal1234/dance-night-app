@@ -117,38 +117,36 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         children: [
                           // Header (Logo + Title)
                           Container(
-                            width: 100,
-                            height: 100,
+                            width: 110,
+                            height: 110,
                             decoration: BoxDecoration(
-                              shape: BoxShape.circle,
                               border: Border.all(color: Theme.of(context).colorScheme.primary, width: 3),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                                  blurRadius: 20,
-                                  spreadRadius: 2,
-                                )
-                              ],
-                              image: const DecorationImage(
-                                image: AssetImage('assets/logo.jpg'),
-                                fit: BoxFit.cover,
-                              ),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(13),
+                              child: Image.asset('assets/new_logo_1.png', fit: BoxFit.contain),
                             ),
                           ),
                           const SizedBox(height: 24),
-                          Text(
-                            'Latin Nation',
-                            style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 32),
+                          RichText(
                             textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 32),
+                              children: const [
+                                TextSpan(text: 'United '),
+                                TextSpan(text: 'Istanbul', style: TextStyle(color: Color(0xFFD4AF37))),
+                              ],
+                            ),
                           ),
                           Text(
-                            'Turkey',
+                            '',
                             style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 24),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Dans Gecesi Kayıt Formu',
+                            'Rezervasyon Formu',
                             style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 16),
                             textAlign: TextAlign.center,
                           ),
@@ -198,30 +196,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   : const Text('Randevu Oluştur', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          Center(
-                            child: RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                style: TextStyle(fontSize: 13, color: Colors.grey),
-                                children: [
-                                  TextSpan(text: 'Adres: '),
-                                  TextSpan(
-                                    text: 'Sanatif Yaklaşımlar ',
-                                    style: TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  TextSpan(text: 'Alkan İş Merkezi Kat:2 No:6 Acıbadem\n(Tepe Nautilus Karşısı)'),
-                                ],
-                              ),
-                            ),
-                          ),
                           const SizedBox(height: 24),
 
                           // Footer Link
                           Center(
                             child: GestureDetector(
                               onTap: () async {
-                                final Uri url = Uri.parse('https://danceschoolapp.com');
+                                final Uri url = Uri.parse('https://unitedistanbul.danceschoolapp.com');
                                 if (!await launchUrl(url)) {
                                   if (mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Site açılamadı')));
@@ -235,7 +216,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   children: [
                                     const TextSpan(text: 'Bu uygulama '),
                                     TextSpan(
-                                      text: 'danceschoolapp.com',
+                                      text: 'unitedistanbul.danceschoolapp.com',
                                       style: TextStyle(
                                         color: Theme.of(context).colorScheme.primary,
                                         fontWeight: FontWeight.bold,

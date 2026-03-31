@@ -41,4 +41,11 @@ class DatabaseService {
       'is_approved': !currentState,
     }).eq('id', id);
   }
+
+  // TOGGLE CHECK-IN
+  Future<void> toggleCheckIn(String id, bool currentState) async {
+    await _client.from('attendees').update({
+      'checked_in': !currentState,
+    }).eq('id', id);
+  }
 }

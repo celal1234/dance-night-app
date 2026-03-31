@@ -25,31 +25,30 @@ class WelcomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 150,
-                height: 150,
+                width: 160,
+                height: 160,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Theme.of(context).colorScheme.primary, width: 4),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
-                      blurRadius: 30,
-                      spreadRadius: 5,
-                    )
-                  ],
-                  image: const DecorationImage(
-                    image: AssetImage('assets/logo.jpg'),
-                    fit: BoxFit.cover,
-                  ),
+                  border: Border.all(color: Theme.of(context).colorScheme.primary, width: 3),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(13),
+                  child: Image.asset('assets/new_logo_1.png', fit: BoxFit.contain),
                 ),
               ),
               const SizedBox(height: 32),
-              Text(
-                'Latin Nation',
-                style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 42),
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 42),
+                  children: const [
+                    TextSpan(text: 'United '),
+                    TextSpan(text: 'Istanbul', style: TextStyle(color: Color(0xFFD4AF37))),
+                  ],
+                ),
               ),
               Text(
-                'Turkey',
+                '',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Theme.of(context).colorScheme.primary, 
                   fontWeight: FontWeight.bold, 
@@ -59,7 +58,7 @@ class WelcomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Dans Gecesi Kayıt Sistemi',
+                'Rezervasyon Formu',
                 style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 18),
               ),
               const SizedBox(height: 64),
@@ -79,7 +78,7 @@ class WelcomeScreen extends StatelessWidget {
                             Navigator.push(context, MaterialPageRoute(builder: (_) => const RegistrationScreen()));
                           },
                           icon: const Icon(Icons.person_add_alt_1, size: 28),
-                          label: const Text('Randevu Formu', style: TextStyle(fontSize: 18)),
+                          label: const Text('Rezervasyon Formu', style: TextStyle(fontSize: 18)),
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                           ),

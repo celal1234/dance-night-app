@@ -96,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.admin_panel_settings, size: 80, color: Colors.white),
+                        Image.asset('assets/new_logo_1.png', height: 100),
                         const SizedBox(height: 16),
                         Text(
                           'Yönetici Girişi',

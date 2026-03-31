@@ -17,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final DatabaseService _db = DatabaseService();
   String _searchQuery = '';
   String _sortBy = 'Tarih (Yeniden Eskiye)';
+  String _checkInFilter = 'Tümü'; // 'Tümü', 'Geldi', 'Gelmedi'
 
   Future<void> _showAddDialog() async {
     final result = await showDialog<Map<String, dynamic>>(
@@ -137,6 +138,24 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _toggleCheckIn(String id, bool currentState) async {
+    try {
+      await _db.toggleCheckIn(id, currentState);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(currentState ? 'Katılımcı "gelmedi" olarak işaretlendi.' : '✅ Katılımcı geldi olarak işaretlendi!'),
+            backgroundColor: currentState ? Colors.orange : Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Hata: $e'), backgroundColor: Colors.red));
+      }
+    }
+  }
+
   Future<void> _exportToExcel(List<Map<String, dynamic>> attendeesList) async {
     try {
       var excel = ex.Excel.createExcel();
@@ -222,51 +241,47 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 60,
-                                height: 60,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: Theme.of(context).colorScheme.primary, width: 2),
-                                  image: const DecorationImage(
-                                    image: AssetImage('assets/logo.jpg'),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
+                        Row(
+                          children: [
+                            Container(
+                              width: 64,
+                              height: 64,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Theme.of(context).colorScheme.primary, width: 2),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Latin Nation', style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 28)),
-                                    Text('Turkey', style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 20)),
-                                  ],
-                                ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.asset('assets/new_logo_1.png', fit: BoxFit.contain),
                               ),
-                            ],
-                          ),
-                        ),
-                        if (!isDesktop) ...[
-                          IconButton(
-                            onPressed: _showAddDialog,
-                            icon: const Icon(Icons.add_circle, size: 48),
-                            color: Theme.of(context).colorScheme.primary,
-                          )
-                        ] else ...[
-                          ElevatedButton.icon(
-                            onPressed: _showAddDialog,
-                            icon: const Icon(Icons.add),
-                            label: const Text('Yeni Kayıt'),
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                             ),
-                          ),
-                        ]
+                            const SizedBox(width: 16),
+                            RichText(
+                              text: TextSpan(
+                                style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 28),
+                                children: const [
+                                  TextSpan(text: 'United '),
+                                  TextSpan(text: 'Istanbul', style: TextStyle(color: Color(0xFFD4AF37))),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        isDesktop
+                          ? ElevatedButton.icon(
+                              onPressed: _showAddDialog,
+                              icon: const Icon(Icons.add),
+                              label: const Text('Yeni Kayıt'),
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                              ),
+                            )
+                          : IconButton(
+                              onPressed: _showAddDialog,
+                              icon: const Icon(Icons.add_circle, size: 48),
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                       ],
                     ),
                   ),
@@ -326,6 +341,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
+                        const SizedBox(width: 8),
+                        _filterChip('Tümü', Icons.people, Colors.white70),
+                        const SizedBox(width: 6),
+                        _filterChip('Geldi', Icons.door_front_door, Colors.amber),
+                        const SizedBox(width: 6),
+                        _filterChip('Gelmedi', Icons.door_front_door_outlined, Colors.white30),
                       ],
                     ),
                   ),
@@ -351,6 +372,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             final school = (a['school_name'] ?? '').toString().toLowerCase();
                             return fName.contains(query) || lName.contains(query) || school.contains(query);
                           }).toList();
+                        }
+
+                        // Apply check-in filter
+                        if (_checkInFilter == 'Geldi') {
+                          attendees = attendees.where((a) => a['checked_in'] == true).toList();
+                        } else if (_checkInFilter == 'Gelmedi') {
+                          attendees = attendees.where((a) => a['checked_in'] != true).toList();
                         }
 
                         // Apply sorting
@@ -427,6 +455,40 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _filterChip(String label, IconData icon, Color activeColor) {
+    final isSelected = _checkInFilter == label;
+    return GestureDetector(
+      onTap: () => setState(() => _checkInFilter = label),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? activeColor.withOpacity(0.2) : Colors.white.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? activeColor : Colors.white.withOpacity(0.15),
+            width: isSelected ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: isSelected ? activeColor : Colors.white54),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? activeColor : Colors.white54,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                fontSize: 13,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -541,6 +603,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 tooltip: attendee['is_approved'] == true ? 'Onayı Kaldır' : 'Onayla',
                 onPressed: () => _toggleApproval(attendee['id'].toString(), attendee['is_approved'] == true),
+              ),
+              IconButton(
+                icon: Icon(
+                  attendee['checked_in'] == true ? Icons.door_front_door : Icons.door_front_door_outlined,
+                  color: attendee['checked_in'] == true ? Colors.amber : Colors.white30,
+                ),
+                tooltip: attendee['checked_in'] == true ? 'Gelmedi Olarak İşaretle' : 'Geldi Olarak İşaretle',
+                onPressed: () => _toggleCheckIn(attendee['id'].toString(), attendee['checked_in'] == true),
               ),
               IconButton(
                 icon: const Icon(Icons.edit, color: Colors.white70),
