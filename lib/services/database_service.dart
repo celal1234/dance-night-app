@@ -42,6 +42,11 @@ class DatabaseService {
     }).eq('id', id);
   }
 
+  // TOGGLE EVENT ACTIVE
+  Future<void> toggleEventActive(String id, bool currentState) async {
+    await _client.from('events').update({'is_active': !currentState}).eq('id', id);
+  }
+
   // DELETE EVENT
   Future<void> deleteEvent(String id) async {
     await _client.from('attendees').update({'event_id': null}).eq('event_id', id);

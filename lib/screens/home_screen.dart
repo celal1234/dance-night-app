@@ -247,6 +247,20 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     }
   }
 
+  Future<void> _toggleEventActive(String id, bool currentState) async {
+    try {
+      await _db.toggleEventActive(id, currentState);
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(currentState ? 'Etkinlik pasife alındı.' : 'Etkinlik aktife alındı.'),
+          backgroundColor: currentState ? Colors.orange : Colors.green,
+        ),
+      );
+    } catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Hata: $e'), backgroundColor: Colors.red));
+    }
+  }
+
   Future<void> _deleteEvent(String id) async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -1048,16 +1062,27 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         child: Text(event['name'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                       ),
                       const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: isActive ? Colors.green.withOpacity(0.15) : Colors.red.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: isActive ? Colors.green.withOpacity(0.5) : Colors.red.withOpacity(0.5)),
-                        ),
-                        child: Text(
-                          isActive ? 'Aktif' : 'Pasif',
-                          style: TextStyle(color: isActive ? Colors.green : Colors.red, fontSize: 11, fontWeight: FontWeight.bold),
+                      GestureDetector(
+                        onTap: () => _toggleEventActive(event['id'].toString(), isActive),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: isActive ? Colors.green.withOpacity(0.15) : Colors.red.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: isActive ? Colors.green.withOpacity(0.5) : Colors.red.withOpacity(0.5)),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(isActive ? Icons.toggle_on : Icons.toggle_off,
+                                  size: 14, color: isActive ? Colors.green : Colors.red),
+                              const SizedBox(width: 4),
+                              Text(
+                                isActive ? 'Aktif' : 'Pasif',
+                                style: TextStyle(color: isActive ? Colors.green : Colors.red, fontSize: 11, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
