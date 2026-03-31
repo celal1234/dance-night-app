@@ -934,85 +934,71 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   // ─── Events Tab ───────────────────────────────────────────────────────────────
 
   Widget _buildEventsTab() {
-    return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: _db.getEventsStream(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text('Hata: ${snapshot.error}', style: const TextStyle(color: Colors.red)));
-        }
-
-        final events = snapshot.data ?? [];
-
-        if (events.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.event_busy, size: 80, color: Colors.white.withOpacity(0.2)),
-                const SizedBox(height: 16),
-                Text('Henüz etkinlik yok.', style: Theme.of(context).textTheme.bodyLarge),
-                const SizedBox(height: 24),
-                ElevatedButton.icon(
-                  onPressed: _showAddEventDialog,
-                  icon: const Icon(Icons.add),
-                  label: const Text('İlk Etkinliği Oluştur'),
-                ),
-              ],
-            ),
-          );
-        }
-
-        return Column(
+    if (_allEvents.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 8.0, top: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white.withOpacity(0.1)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.event, size: 18, color: Theme.of(context).colorScheme.primary),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Toplam: ${events.length} etkinlik',
-                          style: TextStyle(color: Colors.white.withOpacity(0.85), fontWeight: FontWeight.w600, fontSize: 14),
-                        ),
-                      ],
-                    ),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: _showAddEventDialog,
-                    icon: const Icon(Icons.add),
-                    label: const Text('Yeni Etkinlik'),
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                itemCount: events.length,
-                itemBuilder: (context, index) => _buildEventCard(events[index]),
-              ),
+            Icon(Icons.event_busy, size: 80, color: Colors.white.withOpacity(0.2)),
+            const SizedBox(height: 16),
+            Text('Henüz etkinlik yok.', style: Theme.of(context).textTheme.bodyLarge),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: _showAddEventDialog,
+              icon: const Icon(Icons.add),
+              label: const Text('İlk Etkinliği Oluştur'),
             ),
           ],
-        );
-      },
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 8.0, top: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.white.withOpacity(0.1)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.event, size: 18, color: Theme.of(context).colorScheme.primary),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Toplam: ${_allEvents.length} etkinlik',
+                      style: TextStyle(color: Colors.white.withOpacity(0.85), fontWeight: FontWeight.w600, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: _showAddEventDialog,
+                icon: const Icon(Icons.add),
+                label: const Text('Yeni Etkinlik'),
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            itemCount: _allEvents.length,
+            itemBuilder: (context, index) => _buildEventCard(_allEvents[index]),
+          ),
+        ),
+      ],
     );
   }
 
