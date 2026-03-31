@@ -202,7 +202,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           Center(
                             child: GestureDetector(
                               onTap: () async {
-                                final Uri url = Uri.parse('https://unitedistanbul.danceschoolapp.com');
+                                final Uri url = Uri.parse('https://danceschoolapp.com');
                                 if (!await launchUrl(url)) {
                                   if (mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Site açılamadı')));
@@ -216,7 +216,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   children: [
                                     const TextSpan(text: 'Bu uygulama '),
                                     TextSpan(
-                                      text: 'unitedistanbul.danceschoolapp.com',
+                                      text: 'danceschoolapp.com',
                                       style: TextStyle(
                                         color: Theme.of(context).colorScheme.primary,
                                         fontWeight: FontWeight.bold,

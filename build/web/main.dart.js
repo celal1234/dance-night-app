@@ -50860,7 +50860,7 @@ i=A.C7(g,g,g,g,g,g,g,g,g,g,g,g,B.M7,g,new A.cI(A.db(15),B.u),g,g,g,g,g)
 j=A.fj(A.C6(h.x?B.FD:B.abh,j,i),g,1/0)
 i=A.Y(a).ok.z
 i=i==null?g:i.wd(B.k3,13)
-return A.ann(A.fw(g,A.xC(!0,A.h7(A.aIb(new A.fc(new A.al(0,f,0,1/0),A.aGT(new A.cm(B.oU,A.aHq(A.ij(A.b([p,B.iY,q,o,B.Bu,n,B.eo,m,B.bW,l,B.bW,k,B.eo,j,B.iY,A.h7(A.wr(g,A.xz(g,g,g,B.bu,g,g,!0,g,A.dn(A.b([B.a6N,A.dn(g,g,g,g,g,g,g,g,g,A.ez(g,g,A.Y(a).ax.b,g,B.j1,g,g,g,g,g,g,g,g,g,B.b8,g,g,!0,g,g,g,g,g,g,g,g),"unitedistanbul.danceschoolapp.com"),B.a6O],t.VO),g,g,g,g,g,g,g,g,i,g),B.cz,g,g,B.aM,B.aF),B.av,!1,g,g,g,g,g,g,g,g,g,g,g,g,g,g,new A.aAq(h,a),g,g,g,g,g,g),g,g)],t.p),B.V,B.a5,B.aQ),h.e),g),12,new A.cI(s,new A.b8(r,1,B.y,-1))),g),B.ku),g,g),B.aA,!0),B.z,g,new A.d4(g,g,g,g,g,new A.mW(B.cg,B.h9,B.cC,e,g,g),B.ah),g,g,g,g,g,g,g))}}
+return A.ann(A.fw(g,A.xC(!0,A.h7(A.aIb(new A.fc(new A.al(0,f,0,1/0),A.aGT(new A.cm(B.oU,A.aHq(A.ij(A.b([p,B.iY,q,o,B.Bu,n,B.eo,m,B.bW,l,B.bW,k,B.eo,j,B.iY,A.h7(A.wr(g,A.xz(g,g,g,B.bu,g,g,!0,g,A.dn(A.b([B.a6N,A.dn(g,g,g,g,g,g,g,g,g,A.ez(g,g,A.Y(a).ax.b,g,B.j1,g,g,g,g,g,g,g,g,g,B.b8,g,g,!0,g,g,g,g,g,g,g,g),"danceschoolapp.com"),B.a6O],t.VO),g,g,g,g,g,g,g,g,i,g),B.cz,g,g,B.aM,B.aF),B.av,!1,g,g,g,g,g,g,g,g,g,g,g,g,g,g,new A.aAq(h,a),g,g,g,g,g,g),g,g)],t.p),B.V,B.a5,B.aQ),h.e),g),12,new A.cI(s,new A.b8(r,1,B.y,-1))),g),B.ku),g,g),B.aA,!0),B.z,g,new A.d4(g,g,g,g,g,new A.mW(B.cg,B.h9,B.cC,e,g,g),B.ah),g,g,g,g,g,g,g))}}
 A.aAj.prototype={
 $0(){return this.a.x=!0},
 $S:0}
@@ -50894,7 +50894,7 @@ A.aAq.prototype={
 $0(){var s=0,r=A.H(t.H),q=this
 var $async$$0=A.I(function(a,b){if(a===1)return A.E(b,r)
 for(;;)switch(s){case 0:s=2
-return A.z(A.aJJ(A.ei("https://unitedistanbul.danceschoolapp.com",0,null)),$async$$0)
+return A.z(A.aJJ(A.ei("https://danceschoolapp.com",0,null)),$async$$0)
 case 2:if(!b)if(q.a.c!=null)q.b.ag(t.J).f.i6(B.a5r)
 return A.F(null,r)}})
 return A.G($async$$0,r)},
