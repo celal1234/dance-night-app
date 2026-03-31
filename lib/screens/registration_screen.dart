@@ -16,8 +16,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   String _fullPhoneNumber = '';
-  
+  String? _selectedEventId;
+  List<Map<String, dynamic>> _events = [];
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadEvents();
+  }
+
+  Future<void> _loadEvents() async {
+    final events = await _db.getEvents();
+    if (mounted) setState(() => _events = events);
+  }
 
   @override
   void dispose() {
@@ -36,6 +48,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         _firstNameController.text.trim(),
         _lastNameController.text.trim(),
         _fullPhoneNumber,
+        null,
+        null,
+        _selectedEventId,
       );
 
       if (mounted) {
@@ -181,6 +196,25 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             },
                             onSubmitted: (_) => _submitForm(),
                           ),
+                          const SizedBox(height: 16),
+                          if (_events.isEmpty)
+                            const Center(child: CircularProgressIndicator())
+                          else
+                            DropdownButtonFormField<String>(
+                              value: _selectedEventId,
+                              decoration: const InputDecoration(
+                                labelText: 'Etkinlik Seçin',
+                                prefixIcon: Icon(Icons.event),
+                              ),
+                              items: _events.map((event) {
+                                return DropdownMenuItem<String>(
+                                  value: event['id'].toString(),
+                                  child: Text(event['name'].toString()),
+                                );
+                              }).toList(),
+                              onChanged: (value) => setState(() => _selectedEventId = value),
+                              validator: (value) => value == null ? 'Lütfen bir etkinlik seçin' : null,
+                            ),
                           const SizedBox(height: 32),
 
                           SizedBox(

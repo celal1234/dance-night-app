@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import '../services/database_service.dart';
 
 class AttendeeFormDialog extends StatefulWidget {
   final Map<String, dynamic>? attendee; // null ise Ekle, değilse Düzenle modu
@@ -11,12 +12,15 @@ class AttendeeFormDialog extends StatefulWidget {
 }
 
 class _AttendeeFormDialogState extends State<AttendeeFormDialog> {
+  final _db = DatabaseService();
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _firstNameController;
   late TextEditingController _lastNameController;
   late TextEditingController _schoolNameController;
   late TextEditingController _instructorNameController;
   String _fullPhoneNumber = '';
+  String? _selectedEventId;
+  List<Map<String, dynamic>> _events = [];
 
   @override
   void initState() {
@@ -26,6 +30,13 @@ class _AttendeeFormDialogState extends State<AttendeeFormDialog> {
     _fullPhoneNumber = widget.attendee?['phone'] ?? '';
     _schoolNameController = TextEditingController(text: widget.attendee?['school_name'] ?? '');
     _instructorNameController = TextEditingController(text: widget.attendee?['instructor_name'] ?? '');
+    _selectedEventId = widget.attendee?['event_id']?.toString();
+    _loadEvents();
+  }
+
+  Future<void> _loadEvents() async {
+    final events = await _db.getEvents();
+    if (mounted) setState(() => _events = events);
   }
 
   @override
@@ -104,6 +115,23 @@ class _AttendeeFormDialogState extends State<AttendeeFormDialog> {
                   controller: _instructorNameController,
                   decoration: const InputDecoration(labelText: 'Eğitmen Adı (Opsiyonel)', prefixIcon: Icon(Icons.directions_run)),
                 ),
+                const SizedBox(height: 16),
+                if (_events.isNotEmpty)
+                  DropdownButtonFormField<String>(
+                    value: _selectedEventId,
+                    decoration: const InputDecoration(
+                      labelText: 'Etkinlik (Opsiyonel)',
+                      prefixIcon: Icon(Icons.event),
+                    ),
+                    items: [
+                      const DropdownMenuItem<String>(value: null, child: Text('— Seçilmedi —')),
+                      ..._events.map((event) => DropdownMenuItem<String>(
+                        value: event['id'].toString(),
+                        child: Text(event['name'].toString()),
+                      )),
+                    ],
+                    onChanged: (value) => setState(() => _selectedEventId = value),
+                  ),
                 const SizedBox(height: 32),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -122,6 +150,7 @@ class _AttendeeFormDialogState extends State<AttendeeFormDialog> {
                             'phone': _fullPhoneNumber,
                             'school_name': _schoolNameController.text.trim(),
                             'instructor_name': _instructorNameController.text.trim(),
+                            'event_id': _selectedEventId,
                           });
                         }
                       },
