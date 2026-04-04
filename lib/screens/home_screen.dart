@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:excel/excel.dart' as ex;
 import 'package:universal_html/html.dart' as html;
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:url_launcher/url_launcher.dart';
 import '../services/database_service.dart';
 import '../widgets/attendee_form_dialog.dart';
 
@@ -818,6 +819,65 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     }
   }
 
+  void _showWhatsAppDialog(Map<String, dynamic> attendee) {
+    final name = '${attendee['first_name']} ${attendee['last_name']}';
+    final raw = (attendee['phone'] ?? '').toString();
+    final phone = raw.replaceAll(RegExp(r'[^\d]'), '');
+    final controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            const Icon(Icons.chat, color: Color(0xFF25D366)),
+            const SizedBox(width: 8),
+            Expanded(child: Text(name, overflow: TextOverflow.ellipsis)),
+          ],
+        ),
+        content: SizedBox(
+          width: 400,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(raw, style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 13)),
+              const SizedBox(height: 16),
+              TextField(
+                controller: controller,
+                maxLines: 5,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  hintText: 'Mesajınızı yazın...',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('İptal'),
+          ),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.send, size: 18),
+            label: const Text('WhatsApp\'ta Aç'),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF25D366)),
+            onPressed: () {
+              Navigator.pop(ctx);
+              final msg = Uri.encodeComponent(controller.text.trim());
+              final url = Uri.parse('https://wa.me/$phone${msg.isNotEmpty ? '?text=$msg' : ''}');
+              launchUrl(url, mode: LaunchMode.externalApplication);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildAttendeeCard(Map<String, dynamic> attendee) {
     return Card(
       elevation: 4,
@@ -897,6 +957,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                IconButton(
+                  icon: const Icon(Icons.chat, color: Color(0xFF25D366)),
+                  tooltip: 'WhatsApp Gönder',
+                  onPressed: () => _showWhatsAppDialog(attendee),
+                ),
                 IconButton(
                   icon: Icon(
                     attendee['is_approved'] == true ? Icons.check_circle : Icons.check_circle_outline,
